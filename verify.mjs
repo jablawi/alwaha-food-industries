@@ -1,54 +1,109 @@
-import { chromium } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
-import {mkdir,writeFile} from 'node:fs/promises';
-import assert from 'node:assert/strict';
-await mkdir('screenshots',{recursive:true});
-const browser=await chromium.launch();
-const context=await browser.newContext({viewport:{width:1440,height:1000},deviceScaleFactor:1});
-const page=await context.newPage();
-const errors=[];
-page.on('pageerror',e=>errors.push(e.message));
-await page.goto(process.env.TEST_URL||'http://127.0.0.1:4173/',{waitUntil:'networkidle'});
-await page.evaluate(()=>document.fonts.ready);
-for(const language of ['ar','en']){
-  if(language==='en')await page.locator('#language').click();
-  for(const width of [1440,768,390,320]){
-    await page.setViewportSize({width,height:1000});
-    await page.evaluate(async()=>{for(let y=0;y<document.body.scrollHeight;y+=500){window.scrollTo({top:y,behavior:'instant'});await new Promise(r=>setTimeout(r,90));}window.scrollTo({top:0,behavior:'instant'});});
+import { chromium } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+import { mkdir, writeFile } from "node:fs/promises";
+import assert from "node:assert/strict";
+await mkdir("screenshots", { recursive: true });
+const browser = await chromium.launch();
+const context = await browser.newContext({
+  viewport: { width: 1440, height: 1000 },
+  deviceScaleFactor: 1,
+});
+const page = await context.newPage();
+const errors = [];
+page.on("pageerror", (e) => errors.push(e.message));
+await page.goto(process.env.TEST_URL || "http://127.0.0.1:4173/", {
+  waitUntil: "networkidle",
+});
+await page.evaluate(() => document.fonts.ready);
+for (const language of ["ar", "en"]) {
+  if (language === "en") await page.locator("#language").click();
+  for (const width of [1440, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.evaluate(async () => {
+      for (let y = 0; y < document.body.scrollHeight; y += 500) {
+        window.scrollTo({ top: y, behavior: "instant" });
+        await new Promise((r) => setTimeout(r, 90));
+      }
+      window.scrollTo({ top: 0, behavior: "instant" });
+    });
     await page.waitForTimeout(900);
-    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`Horizontal overflow: ${language} ${width}`);
-    assert.equal(await page.locator('h1').count(),1);
-    assert(await page.evaluate(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0)),'Image failed');
-    await page.screenshot({path:`screenshots/${language}-${width}.png`,fullPage:true});
-    const axe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
-    await writeFile(`screenshots/axe-${language}-${width}.json`,JSON.stringify(axe.violations,null,2));
-    assert.equal(axe.violations.length,0,JSON.stringify(axe.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))));
-    console.log(`PASS ${language} ${width}px: no overflow, all images loaded, accessibility checks clear`);
+    assert(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+      `Horizontal overflow: ${language} ${width}`,
+    );
+    assert.equal(await page.locator("h1").count(), 1);
+    assert(
+      await page.evaluate(() =>
+        [...document.images].every((i) => i.complete && i.naturalWidth > 0),
+      ),
+      "Image failed",
+    );
+    await page.screenshot({
+      path: `screenshots/${language}-${width}.png`,
+      fullPage: true,
+    });
+    const axe = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+    await writeFile(
+      `screenshots/axe-${language}-${width}.json`,
+      JSON.stringify(axe.violations, null, 2),
+    );
+    assert.equal(
+      axe.violations.length,
+      0,
+      JSON.stringify(
+        axe.violations.map((v) => ({
+          id: v.id,
+          nodes: v.nodes.map((n) => n.target),
+        })),
+      ),
+    );
+    console.log(
+      `PASS ${language} ${width}px: no overflow, all images loaded, accessibility checks clear`,
+    );
   }
 }
-await page.setViewportSize({width:390,height:844});
-await page.locator('#menu').click();
-assert.equal(await page.locator('#menu').getAttribute('aria-expanded'),'true');
+await page.setViewportSize({ width: 390, height: 844 });
+await page.locator("#menu").click();
+assert.equal(await page.locator("#menu").getAttribute("aria-expanded"), "true");
 await page.locator('#navigation a[href="#contact"]').click();
-assert.equal(await page.locator('#menu').getAttribute('aria-expanded'),'false');
-await page.locator('[name="name"]').fill('Client Test');
-await page.locator('[name="company"]').fill('Test Company');
-await page.locator('[name="email"]').fill('client@example.com');
-await page.locator('[name="message"]').fill('Please share information about 50 kg sugar supply.');
+assert.equal(
+  await page.locator("#menu").getAttribute("aria-expanded"),
+  "false",
+);
+await page.locator('[name="name"]').fill("Client Test");
+await page.locator('[name="company"]').fill("Test Company");
+await page.locator('[name="email"]').fill("client@example.com");
+await page
+  .locator('[name="message"]')
+  .fill("Please share information about 50 kg sugar supply.");
 await page.locator('button[type="submit"]').click();
-assert(await page.locator('#enquiry-dialog').isVisible());
-assert((await page.locator('#enquiry-preview').textContent()).includes('Client Test'));
-const downloadPromise=page.waitForEvent('download');
-await page.locator('#download-enquiry').click();
-const download=await downloadPromise;
-assert.equal(download.suggestedFilename(),'alwaha-partnership-enquiry.txt');
-await page.keyboard.press('Escape');
-assert(!(await page.locator('#enquiry-dialog').isVisible()));
+assert(await page.locator("#enquiry-dialog").isVisible());
+assert(
+  (await page.locator("#enquiry-preview").textContent()).includes(
+    "Client Test",
+  ),
+);
+const downloadPromise = page.waitForEvent("download");
+await page.locator("#download-enquiry").click();
+const download = await downloadPromise;
+assert.equal(download.suggestedFilename(), "alwaha-partnership-enquiry.txt");
+await page.keyboard.press("Escape");
+assert(!(await page.locator("#enquiry-dialog").isVisible()));
 await page.reload();
-assert.equal(await page.locator('html').getAttribute('lang'),'en');
-await page.emulateMedia({reducedMotion:'reduce'});
+assert.equal(await page.locator("html").getAttribute("lang"), "en");
+await page.emulateMedia({ reducedMotion: "reduce" });
 await page.reload();
-assert(!(await page.locator('html').getAttribute('class')||'').includes('js-motion'));
-assert.deepEqual(errors,[]);
-console.log('PASS mobile menu, enquiry preview/download, dialog keyboard dismissal, language persistence, reduced motion, and zero JavaScript errors');
+assert(
+  !((await page.locator("html").getAttribute("class")) || "").includes(
+    "js-motion",
+  ),
+);
+assert.deepEqual(errors, []);
+console.log(
+  "PASS mobile menu, enquiry preview/download, dialog keyboard dismissal, language persistence, reduced motion, and zero JavaScript errors",
+);
 await browser.close();

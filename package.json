@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "test": "node verify.mjs",
-    "start": "node serve.mjs"
+    "start": "node serve.mjs",
+    "format": "prettier --write index.html styles.css app.js serve.mjs verify.mjs"
   },
   "description": "Al Waha Food Industries bilingual brand website",
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.63.0"
+    "@playwright/test": "^1.63.0",
+    "prettier": "^3.9.6"
   },
   "private": true
 }

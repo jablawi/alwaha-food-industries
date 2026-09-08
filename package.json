@@ -1,0 +1,14 @@
+{
+  "name": "alwaha-food-industries",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node verify.mjs",
+    "start": "node serve.mjs"
+  },
+  "description": "Al Waha Food Industries bilingual brand website",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0"
+  },
+  "private": true
+}

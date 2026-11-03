@@ -2,7 +2,9 @@
 
 An Arabic-first, bilingual brand website for Al Waha, with an English switch, responsive layouts, original generated PNG photography, scroll reveals, reduced-motion support, and an accessible enquiry composer.
 
-Live website: https://jablawi.github.io/alwaha-food-industries/
+Live website: https://alwaha-food-industries.vercel.app/
+
+GitHub Pages: https://jablawi.github.io/alwaha-food-industries/
 
 ## Local development
 

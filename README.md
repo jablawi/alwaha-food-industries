@@ -32,7 +32,7 @@ Checks both languages at 1440, 768, 390, and 320px; verifies images, horizontal 
 
 Vercel runs `npm run build` and serves `dist/`. Only `index.html`, `styles.css`, `app.js`, `.nojekyll`, and `assets/` are included in the deployed artifact.
 
-For automatic production deployments from `main`, grant the Vercel GitHub app access to `jablawi/alwaha-food-industries`, then connect the repository in the Vercel project's Settings → Git. A linked local checkout can also deploy with `vercel --prod`.
+The Vercel GitHub integration is connected to `jablawi/alwaha-food-industries`. Pushing to `main` automatically builds and deploys the production website. A linked local checkout can also deploy with `vercel --prod`.
 
 The existing GitHub Actions workflow also deploys to GitHub Pages.
 

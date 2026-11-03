@@ -28,7 +28,13 @@ Checks both languages at 1440, 768, 390, and 320px; verifies images, horizontal 
 
 ## Deployment
 
-Pushing to `main` deploys via GitHub Actions to GitHub Pages. Only `index.html`, `styles.css`, `app.js`, `.nojekyll`, and `assets/` are included in the deployed artifact.
+Vercel runs `npm run build` and serves `dist/`. Only `index.html`, `styles.css`, `app.js`, `.nojekyll`, and `assets/` are included in the deployed artifact.
+
+For automatic production deployments from `main`, grant the Vercel GitHub app access to `jablawi/alwaha-food-industries`, then connect the repository in the Vercel project's Settings → Git. A linked local checkout can also deploy with `vercel --prod`.
+
+The existing GitHub Actions workflow also deploys to GitHub Pages.
+
+The planned custom domain is `alwahastores-sy.com`. Add it in the Vercel project's Settings → Domains, then apply the DNS records shown by Vercel at the domain registrar.
 
 ## Content and contact configuration
 

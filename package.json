@@ -2,6 +2,7 @@
   "name": "alwaha-food-industries",
   "version": "1.0.0",
   "scripts": {
+    "build": "node build.mjs",
     "test": "node verify.mjs",
     "start": "node serve.mjs",
     "format": "prettier --write index.html styles.css app.js serve.mjs verify.mjs"
